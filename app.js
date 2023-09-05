@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRouter);
 app.use('/api/question', questionRouter);
-//app.use('/api/topic', topicRouter);
+app.use('/api/topic', topicRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });

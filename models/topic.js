@@ -3,26 +3,31 @@ const Joi = require('joi');
 const { handleMongooseError } = require('../helper');
 
 const schema = Joi.object({
-  id: Joi.string(),
   topic: Joi.string().required(),
-  listQuestionId: Joi.array().items(Joi.string().required()),
+  listQuestionId: Joi.array().items(Joi.string()),
 });
 
-const questionSchema = new Schema({
+const schemaUpdate = Joi.object({
+  topic: Joi.string().required(),
+  listQuestionId: Joi.array().items(Joi.string()),
+});
+
+const topicsSchema = new Schema({
   topic: {
     type: String,
   },
-  idUser: {},
-  answearList: [
-    {
-      answer: { type: String },
-      isRight: { type: Boolean },
-    },
-  ],
+  idUser: {
+    type: String,
+    required: [true, 'idUser is required'],
+  },
+  listQuestionID: {
+    type: Array,
+    items: String,
+  },
 });
 
-questionSchema.post('save', handleMongooseError);
+topicsSchema.post('save', handleMongooseError);
 
-const Question = model('question', questionSchema);
+const Topics = model('topic', topicsSchema);
 
-module.exports = { Question, schema };
+module.exports = { Topics, schema, schemaUpdate };

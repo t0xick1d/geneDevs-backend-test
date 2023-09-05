@@ -3,8 +3,6 @@ const Joi = require('joi');
 
 const { handleMongooseError } = require('../helper');
 
-const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
 const registerSchema = Joi.object({
   nickName: Joi.string().required(),
   email: Joi.string().required(),
