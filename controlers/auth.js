@@ -1,6 +1,5 @@
 const bcryp = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const gravatar = require('gravatar');
 const { nanoid } = require('nanoid');
 
 const { User } = require('../models/user');
@@ -9,8 +8,6 @@ const { HttpError, ctrlWrapper, sendEmail } = require('../helper');
 
 const { SEKRET_KEY, BASE_URL } = process.env;
 
-// const avatarDir = path.join(__dirname, '../', 'public', 'avatars');
-
 const register = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -18,7 +15,6 @@ const register = async (req, res) => {
     throw HttpError(409);
   }
   const hashPassword = await bcryp.hash(password, 10);
-  const avatarUrl = gravatar.url(email);
   const verficationCode = nanoid();
   const verficationEmail = {
     to: email,
@@ -29,15 +25,14 @@ const register = async (req, res) => {
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarUrl,
     verificationToken: verficationCode,
   });
 
   await sendEmail(verficationEmail);
 
   res.status(201).json({
+    nickName: newUser.nickName,
     email: newUser.email,
-    subscription: newUser.subscription,
   });
 };
 
@@ -100,6 +95,7 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   const { _id } = req.user;
+  console.log(_id);
   await User.findByIdAndUpdate(_id, { token: '' });
   res.status(204).json({
     message: 'No Content',

@@ -4,19 +4,15 @@ const { handleMongooseError } = require('../helper');
 
 const schema = Joi.object({
   id: Joi.string(),
-  question: Joi.string().required(),
-  answearList: Joi.array().items(
-    Joi.object({
-      answear: Joi.string().required(),
-      isRght: Joi.boolean().required(),
-    }),
-  ),
+  topic: Joi.string().required(),
+  listQuestionId: Joi.array().items(Joi.string().required()),
 });
 
 const questionSchema = new Schema({
-  question: {
+  topic: {
     type: String,
   },
+  idUser: {},
   answearList: [
     {
       answer: { type: String },
