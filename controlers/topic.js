@@ -1,4 +1,5 @@
 const { Topics } = require('../models/topic');
+const { Question } = require('../models/question');
 
 const { HttpError } = require('../helper');
 const { ctrlWrapper } = require('../helper');
@@ -18,7 +19,9 @@ const add = async (req, res, next) => {
 
 const deleteById = async (req, res, next) => {
   const { topicId } = req.params;
+  const deleteQuestion = await Question.deleteMany({ topicId });
   const deleteTopice = await Topics.findByIdAndRemove(topicId);
+  console.log(deleteQuestion);
   if (!deleteTopice) {
     throw HttpError(404, 'Not found');
   }
@@ -27,14 +30,7 @@ const deleteById = async (req, res, next) => {
 
 const updateById = async (req, res, next) => {
   const id = req.params.topicId;
-  const updateTopics = await Topics.findByIdAndUpdate(
-    id,
-    {
-      ...req.body,
-      $set: { listQuestionID: req.body.listQuestionID },
-    },
-    { new: true, upsert: true },
-  );
+  const updateTopics = await Topics.findByIdAndUpdate(id, req.body, { new: true, upsert: true });
   if (!updateTopics) {
     throw HttpError(400, 'missing fields');
   }
