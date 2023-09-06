@@ -4,25 +4,26 @@ const router = express.Router();
 
 const ctrl = require('../../controlers/question');
 
-const { validateBody, isValidId } = require('../../middleweres/');
+const { validateBody, isValidId, authenticate } = require('../../middleweres/');
 
-const { schema, updateFavoriteSchema } = require('../../models/question');
+const { schema, updateSchema } = require('../../models/question');
 
-router.get('/', ctrl.getAll);
+//router.get('/', ctrl.getAll);
 
-router.get('/:questionId', isValidId, ctrl.getById);
+router.get('/:topicId', authenticate, isValidId, ctrl.getById);
 
-// router.post('/', validateBody(schema), ctrl.add);
+router.post('/', authenticate, validateBody(schema), ctrl.add);
 
-// router.delete('/:questionId', isValidId, ctrl.deleteById);
+router.delete('/:topicId', authenticate, isValidId, ctrl.deleteById);
 
 // router.put('/:questionId', isValidId, validateBody(schema), ctrl.updateById);
 
-// router.patch(
-//   '/:questionId/favorite',
-//   isValidId,
-//   validateBody(updateFavoriteSchema),
-//   ctrl.updateStatusContact,
-// );
+router.patch(
+  '/:topicId/update',
+  authenticate,
+  isValidId,
+  validateBody(updateSchema),
+  ctrl.updateById,
+);
 
 module.exports = router;

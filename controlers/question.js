@@ -3,59 +3,51 @@ const { Question } = require('../models/question');
 const { HttpError } = require('../helper');
 const { ctrlWrapper } = require('../helper');
 
-const getAll = async (req, res, next) => {
-  const result = await Question.find();
-  res.status(200).json(result);
-};
-
 const getById = async (req, res, next) => {
-  const { questionId } = req.params;
-  console.log(questionId);
-  const result = await Question.findById(questionId);
+  const { topicId } = req.params;
+  console.log(topicId);
+  const result = await Question.find({ topicId });
+  console.log(result);
   if (!result) {
-    console.log(HttpError);
     throw HttpError(404, 'Not found');
   }
   res.status(200).json(result);
 };
 
-// const add = async (req, res, next) => {
-//   const body = req.body;
-//   const newContact = await Contact.create(body);
-//   res.status(201).json(newContact);
-// };
+const add = async (req, res, next) => {
+  const body = req.body;
+  const newQuestion = await Question.create(body);
+  res.status(201).json(newQuestion);
+};
 
-// const deleteById = async (req, res, next) => {
-//   const { contactId } = req.params;
-//   const deleteContact = await Contact.findByIdAndRemove(contactId);
-//   if (!deleteContact) {
-//     throw HttpError(404, 'Not found');
-//   }
-//   res.status(200).json({ message: 'contact deleted' });
-// };
+const deleteById = async (req, res, next) => {
+  const { topicId } = req.params;
+  const deleteQuestion = await Question.findByIdAndRemove(topicId);
+  if (!deleteQuestion) {
+    throw HttpError(404, 'Not found');
+  }
+  res.status(200).json({ message: 'Question deleted' });
+};
 
-// const updateById = async (req, res, next) => {
-//   const id = req.params.contactId;
-//   const updateContact = await Contact.findByIdAndUpdate(id, req.body, { new: true });
-//   if (!updateContact) {
-//     throw HttpError(400, 'missing fields');
-//   }
-//   res.status(200).json(updateContact);
-// };
-// const updateStatusContact = async (req, res, next) => {
-//   const id = req.params.contactId;
-//   const updateStatusContact = await Contact.findByIdAndUpdate(id, req.body, { new: true });
-//   if (!updateStatusContact) {
-//     throw HttpError(400, 'missing fields');
-//   }
-//   res.status(200).json(updateStatusContact);
-// };
+const updateById = async (req, res, next) => {
+  const id = req.params.topicId;
+  const updateQuestion = await Question.findByIdAndUpdate(
+    id,
+    {
+      ...req.body,
+      $set: { answearList: req.body.answearList },
+    },
+    { new: true, upsert: true },
+  );
+  if (!updateQuestion) {
+    throw HttpError(400, 'missing fields');
+  }
+  res.status(200).json(updateQuestion);
+};
 
 module.exports = {
-  getAll: ctrlWrapper(getAll),
   getById: ctrlWrapper(getById),
-  // add: ctrlWrapper(add),
-  // deleteById: ctrlWrapper(deleteById),
-  // updateById: ctrlWrapper(updateById),
-  // updateStatusContact: ctrlWrapper(updateStatusContact),
+  add: ctrlWrapper(add),
+  deleteById: ctrlWrapper(deleteById),
+  updateById: ctrlWrapper(updateById),
 };
