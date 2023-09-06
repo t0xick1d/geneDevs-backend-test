@@ -27,7 +27,14 @@ const deleteById = async (req, res, next) => {
 
 const updateById = async (req, res, next) => {
   const id = req.params.topicId;
-  const updateTopics = await Topics.findByIdAndUpdate(id, req.body, { new: true });
+  const updateTopics = await Topics.findByIdAndUpdate(
+    id,
+    {
+      ...req.body,
+      $set: { listQuestionID: req.body.listQuestionID },
+    },
+    { new: true, upsert: true },
+  );
   if (!updateTopics) {
     throw HttpError(400, 'missing fields');
   }

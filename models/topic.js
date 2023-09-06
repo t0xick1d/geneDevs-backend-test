@@ -20,10 +20,7 @@ const topicsSchema = new Schema({
     type: String,
     required: [true, 'idUser is required'],
   },
-  listQuestionID: {
-    type: Array,
-    items: String,
-  },
+  listQuestionID: [{ type: String }],
 });
 
 topicsSchema.post('save', handleMongooseError);
