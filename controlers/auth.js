@@ -19,7 +19,7 @@ const register = async (req, res) => {
   const verficationEmail = {
     to: email,
     subject: 'Verify email',
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verficationCode}">Click varify email</a>`,
+    html: `<a target="_blank" href="${BASE_URL}/api/auth/verify/${verficationCode}">Click varify email</a>`,
   };
 
   const newUser = await User.create({
